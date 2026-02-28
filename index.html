@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moon Wolf | Silver Moon She-Wolf</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        moon: {
+                            900: '#0B1325', /* Azul profundo sombra de lua */
+                            800: '#1A2640', /* Painéis azuis */
+                            700: '#2C3E5D', /* Hover */
+                        },
+                        silver: {
+                            100: '#F8F9FA',
+                            300: '#E2E8F0', /* Prata claro */
+                            400: '#CBD5E1', /* Prata médio */
+                            500: '#94A3B8', /* Prata escuro */
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B1325;
+            color: #E2E8F0;
+        }
+        
+        /* Ocultar barra de rolagem mas manter funcionalidade */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B1325; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2C3E5D; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8; 
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-panel {
+            background: rgba(26, 38, 64, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.1);
+        }
+
+        .silver-gradient-text {
+            background: linear-gradient(to right, #ffffff, #94A3B8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .silver-border-glow:hover {
+            box-shadow: 0 0 15px rgba(203, 213, 225, 0.3);
+            border-color: #CBD5E1;
+        }
+
+        /* Notificação Toast */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #CBD5E1;
+            color: #0B1325;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 50;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-weight: 600;
+        }
+        #toast.show {
+            visibility: visible;
+            animation: fadeinToast 0.5s, fadeoutToast 0.5s 2.5s;
+        }
+        @keyframes fadeinToast {
+            from {bottom: 0; opacity: 0;} 
+            to {bottom: 30px; opacity: 1;}
+        }
+        @keyframes fadeoutToast {
+            from {bottom: 30px; opacity: 1;} 
+            to {bottom: 0; opacity: 0;}
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Navbar / Header -->
+    <header class="glass-panel sticky top-0 z-40 border-b border-white/10 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="switchTab('home')">
+                    <!-- SVG Customizado Lobo + Lua -->
+                    <svg class="h-10 w-10 text-silver-300 mr-3" viewBox="0 0 100 100" fill="currentColor">
+                        <path d="M50,5 C25.1,5 5,25.1 5,50 C5,74.9 25.1,95 50,95 C74.9,95 95,74.9 95,50 C95,25.1 74.9,5 50,5 Z M50,85 C30.7,85 15,69.3 15,50 C15,30.7 30.7,15 50,15 C45,25 45,35 50,45 C55,30 65,20 80,18 C83,28 85,39 85,50 C85,69.3 69.3,85 50,85 Z" opacity="0.3"/>
+                        <path d="M50,45 L40,65 L50,60 L60,65 Z M35,70 L45,55 L30,40 L45,45 L50,25 L55,45 L70,40 L55,55 L65,70 L50,65 Z" fill="#E2E8F0"/>
+                    </svg>
+                    <div class="flex flex-col">
+                        <span class="text-xl font-bold tracking-widest uppercase silver-gradient-text">Moon Wolf</span>
+                        <span class="text-xs text-silver-500 tracking-widest">Silver Moon She-Wolf</span>
+                    </div>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-1">
+                    <button onclick="switchTab('home')" id="btn-home" class="tab-btn px-4 py-2 rounded-md text-sm font-semibold text-silver-300 hover:text-white hover:bg-moon-700 transition active bg-moon-800">Início</button>
+                    <button onclick="switchTab('catalogo')" id="btn-catalogo" class="tab-btn px-4 py-2 rounded-md text-sm font-semibold text-silver-500 hover:text-white hover:bg-moon-700 transition">Catálogo</button>
+                    <button onclick="switchTab('estrategia')" id="btn-estrategia" class="tab-btn px-4 py-2 rounded-md text-sm font-semibold text-silver-500 hover:text-white hover:bg-moon-700 transition">Tática & Sobrevivência</button>
+                </nav>
+
+                <!-- Cart Button -->
+                <div class="flex items-center">
+                    <button onclick="switchTab('carrinho')" class="relative p-2 text-silver-400 hover:text-white transition">
+                        <i class="fa-solid fa-bag-shopping text-xl"></i>
+                        <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-moon-900 bg-silver-300 rounded-full transform translate-x-1/4 -translate-y-1/4">0</span>
+                    </button>
+                    <!-- Mobile menu button -->
+                    <button class="md:hidden ml-4 text-silver-300" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden bg-moon-800 border-t border-white/10">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <button onclick="switchTab('home'); this.parentElement.parentElement.classList.add('hidden')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white bg-moon-700">Início</button>
+                <button onclick="switchTab('catalogo'); this.parentElement.parentElement.classList.add('hidden')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-silver-400 hover:text-white hover:bg-moon-700">Catálogo</button>
+                <button onclick="switchTab('estrategia'); this.parentElement.parentElement.classList.add('hidden')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-silver-400 hover:text-white hover:bg-moon-700">Tática</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow w-full">
+        
+        <!-- ==================== TAB: INÍCIO ==================== -->
+        <div id="home" class="tab-content active">
+            <!-- Hero Section -->
+            <div class="relative overflow-hidden">
+                <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2342&auto=format&fit=crop')] bg-cover bg-center opacity-10"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-moon-900 via-transparent to-moon-900"></div>
+                
+                <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 flex flex-col items-center text-center">
+                    <span class="text-silver-500 font-semibold tracking-widest uppercase mb-4 text-sm"><i class="fa-solid fa-shield-halved mr-2"></i>A Revolução da Segurança Feminina</span>
+                    <h1 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+                        Inteligência tática e <span class="silver-gradient-text">defesa pessoal</span> camuflada no seu dia a dia.
+                    </h1>
+                    <p class="mt-4 text-xl text-silver-400 max-w-3xl mb-10">
+                        Acessórios comuns escondem engenharia de sobrevivência. Letais na precisão, até o momento exato em que salvam uma vida.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="switchTab('catalogo')" class="px-8 py-4 bg-silver-300 text-moon-900 font-bold rounded-full hover:bg-white transition shadow-[0_0_15px_rgba(226,232,240,0.5)]">
+                            Explorar a Linha Silver Moon
+                        </button>
+                        <button onclick="switchTab('estrategia')" class="px-8 py-4 bg-transparent border border-silver-500 text-silver-300 font-bold rounded-full hover:bg-white/10 transition">
+                            Conhecer a Tática
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Destaques -->
+            <div class="max-w-7xl mx-auto px-4 py-16">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="glass-panel p-8 rounded-2xl text-center border-t border-l border-white/5">
+                        <div class="w-16 h-16 mx-auto bg-moon-800 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-black/50">
+                            <i class="fa-solid fa-eye-slash text-2xl text-silver-300"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 silver-gradient-text">Perfeitamente Invisível</h3>
+                        <p class="text-silver-400 text-sm">Desenvolvidos para estarem sempre nas mãos ou no corpo, sem levantar qualquer suspeita do agressor.</p>
+                    </div>
+                    <div class="glass-panel p-8 rounded-2xl text-center border-t border-l border-white/5">
+                        <div class="w-16 h-16 mx-auto bg-moon-800 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-black/50">
+                            <i class="fa-solid fa-bolt text-2xl text-silver-300"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 silver-gradient-text">Ação em Frações de Segundo</h3>
+                        <p class="text-silver-400 text-sm">Design focado em desvencilhamento rápido. Se o agressor for incapacitado instantaneamente, você ganha tempo para fugir.</p>
+                    </div>
+                    <div class="glass-panel p-8 rounded-2xl text-center border-t border-l border-white/5">
+                        <div class="w-16 h-16 mx-auto bg-moon-800 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-black/50">
+                            <i class="fa-solid fa-hand-fist text-2xl text-silver-300"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 silver-gradient-text">Uso com Uma Mão</h3>
+                        <p class="text-silver-400 text-sm">Mecanismos ergonômicos e gatilhos de precisão que podem ser acionados mesmo sob contenção ou com apenas uma mão livre.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: CATÁLOGO ==================== -->
+        <div id="catalogo" class="tab-content">
+            <div class="max-w-7xl mx-auto px-4 py-12">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold silver-gradient-text uppercase tracking-widest">Coleção Silver Moon She-Wolf</h2>
+                    <p class="mt-4 text-silver-400">O Ecossistema de Sobrevivência: Escolha sua estratégia de defesa.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    
+                    <!-- Produto 1: Capa Spray -->
+                    <div class="glass-panel rounded-3xl overflow-hidden border border-white/10 silver-border-glow transition duration-300 flex flex-col">
+                        <div class="h-64 bg-moon-800 relative flex items-center justify-center p-6">
+                            <!-- Placeholder de Imagem com Ícone -->
+                            <i class="fa-solid fa-mobile-screen text-8xl text-silver-500 opacity-50 absolute"></i>
+                            <div class="z-10 text-center">
+                                <span class="bg-moon-900 text-silver-300 text-xs font-bold px-3 py-1 rounded-full border border-silver-500 uppercase tracking-wide">Produto Herói</span>
+                            </div>
+                        </div>
+                        <div class="p-8 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-white mb-1">Capa-Spray Moon Wolf</h3>
+                                    <p class="text-sm text-silver-400">Defesa Química Oculta (Gel de Capsaicina)</p>
+                                </div>
+                                <span class="text-xl font-bold text-silver-300">R$ 249,00</span>
+                            </div>
+                            <p class="text-silver-400 text-sm mb-6 flex-grow">
+                                Compartimento achatado e pressurizado na traseira do smartphone. Possui bico direcionador próximo à câmera e gatilho ergonômico com trava deslizante. Perfeito para a estratégia da "Falsa Entrega".
+                            </p>
+                            <ul class="text-sm text-silver-300 space-y-2 mb-8">
+                                <li><i class="fa-solid fa-check text-green-400 mr-2"></i> Acionável com apenas uma mão</li>
+                                <li><i class="fa-solid fa-check text-green-400 mr-2"></i> Jato em cone maximiza impacto no rosto</li>
+                                <li><i class="fa-solid fa-check text-green-400 mr-2"></i> Gel adere à pele, impossibilitando visão</li>
+                            </ul>
+                            <button onclick="addToCart('Capa-Spray Moon Wolf', 249.00)" class="w-full py-3 bg-silver-300 text-moon-900 font-bold rounded-xl hover:bg-white transition flex items-center justify-center">
+                                <i class="fa-solid fa-cart-plus mr-2"></i> Adicionar ao Arsenal
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Produto 2: Scrunchie Mod 1 -->
+                    <div class="glass-panel rounded-3xl overflow-hidden border border-white/10 silver-border-glow transition duration-300 flex flex-col">
+                        <div class="h-64 bg-moon-800 relative flex items-center justify-center">
+                            <i class="fa-solid fa-ring text-8xl text-silver-500 opacity-50 absolute"></i>
+                        </div>
+                        <div class="p-8 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-white mb-1">Scrunchie Módulo 1</h3>
+                                    <p class="text-sm text-silver-400">A Básica Oculta (Algodão e Nylon)</p>
+                                </div>
+                                <span class="text-xl font-bold text-silver-300">R$ 79,00</span>
+                            </div>
+                            <p class="text-silver-400 text-sm mb-6 flex-grow">
+                                Foco: Restrição Física. Tecido externo macio para conforto. O núcleo possui um anel múltiplo de fio de nylon de alta tensão que atua como garrote defensivo de extrema resistência.
+                            </p>
+                            <button onclick="addToCart('Scrunchie Mod 1: Básica Oculta', 79.00)" class="w-full py-3 border border-silver-400 text-silver-300 font-bold rounded-xl hover:bg-silver-300 hover:text-moon-900 transition flex items-center justify-center mt-auto">
+                                <i class="fa-solid fa-cart-plus mr-2"></i> Adicionar ao Arsenal
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Produto 3: Scrunchie Mod 2 -->
+                    <div class="glass-panel rounded-3xl overflow-hidden border border-white/10 silver-border-glow transition duration-300 flex flex-col">
+                        <div class="h-64 bg-moon-800 relative flex items-center justify-center">
+                            <i class="fa-solid fa-circle-notch text-8xl text-silver-500 opacity-50 absolute"></i>
+                        </div>
+                        <div class="p-8 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-white mb-1">Scrunchie Módulo 2</h3>
+                                    <p class="text-sm text-silver-400">A Tática de Fricção (Couro, Nylon e Dentes)</p>
+                                </div>
+                                <span class="text-xl font-bold text-silver-300">R$ 119,00</span>
+                            </div>
+                            <p class="text-silver-400 text-sm mb-6 flex-grow">
+                                Foco: Choque de Dor Imediato. Revestimento retrátil que imita couro. Quando esticada, revela fio trançado áspero e microsserrilhas ("dentinhos") de polímero que forçam o agressor a soltar instantaneamente devido à dor aguda.
+                            </p>
+                            <button onclick="addToCart('Scrunchie Mod 2: Tática de Fricção', 119.00)" class="w-full py-3 border border-silver-400 text-silver-300 font-bold rounded-xl hover:bg-silver-300 hover:text-moon-900 transition flex items-center justify-center mt-auto">
+                                <i class="fa-solid fa-cart-plus mr-2"></i> Adicionar ao Arsenal
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Produto 4: Scrunchie Mod 3 -->
+                    <div class="glass-panel rounded-3xl overflow-hidden border border-white/10 silver-border-glow transition duration-300 flex flex-col">
+                        <div class="h-64 bg-moon-800 relative flex items-center justify-center">
+                            <i class="fa-solid fa-gem text-8xl text-silver-500 opacity-50 absolute"></i>
+                        </div>
+                        <div class="p-8 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-white mb-1">Scrunchie Módulo 3</h3>
+                                    <p class="text-sm text-silver-400">A Defesa Química (Miçangas de Ardor)</p>
+                                </div>
+                                <span class="text-xl font-bold text-silver-300">R$ 139,00</span>
+                            </div>
+                            <p class="text-silver-400 text-sm mb-6 flex-grow">
+                                Foco: Desorientação Híbrida. Adornos quebráveis sob alta pressão contêm cápsulas de gel de capsaicina. Ao ser comprimido contra o pescoço do agressor, libera o líquido causando ardência insuportável e vapor cegante.
+                            </p>
+                            <button onclick="addToCart('Scrunchie Mod 3: Defesa Química', 139.00)" class="w-full py-3 border border-silver-400 text-silver-300 font-bold rounded-xl hover:bg-silver-300 hover:text-moon-900 transition flex items-center justify-center mt-auto">
+                                <i class="fa-solid fa-cart-plus mr-2"></i> Adicionar ao Arsenal
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: TÁTICA & SOBREVIVÊNCIA ==================== -->
+        <div id="estrategia" class="tab-content">
+            <div class="max-w-7xl mx-auto px-4 py-12">
+                
+                <!-- A Regra de Ouro -->
+                <div class="glass-panel rounded-3xl p-8 md:p-12 mb-12 border border-silver-500/30">
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="md:w-1/2">
+                            <h2 class="text-3xl font-bold text-white mb-6 uppercase tracking-wider border-l-4 border-silver-300 pl-4">A Regra de Ouro da Sobrevivência</h2>
+                            <p class="text-lg text-silver-300 leading-relaxed">
+                                O objetivo nunca é medir forças. A defesa pessoal feminina exige <strong class="text-white">estratégia, elemento surpresa e desvencilhamento rápido</strong>.
+                            </p>
+                            <p class="mt-4 text-silver-400">
+                                Não tente lutar contra a biologia ou a força bruta. Nossos equipamentos são projetados para causar dor aguda instantânea, cegueira temporária ou sufocamento surpresa. 
+                                <br><br>
+                                <em>Se o agressor for incapacitado instantaneamente, você ganha a janela vital de tempo para fugir e buscar ajuda.</em>
+                            </p>
+                        </div>
+                        <div class="md:w-1/2 flex justify-center space-x-8">
+                            <div class="text-center opacity-50">
+                                <i class="fa-solid fa-dumbbell text-6xl text-red-500 mb-4 block"></i>
+                                <span class="line-through">Luta Física</span>
+                            </div>
+                            <div class="text-center">
+                                <i class="fa-solid fa-person-running text-6xl text-green-400 mb-4 block"></i>
+                                <span class="font-bold text-white">Surpresa + Fuga</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tática Capa Spray -->
+                <h3 class="text-2xl font-bold text-center mb-8 silver-gradient-text">A Estratégia da "Falsa Entrega"</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
+                    <div class="bg-moon-800 p-6 rounded-2xl border border-white/5 text-center relative">
+                        <div class="w-8 h-8 bg-silver-300 text-moon-900 rounded-full flex items-center justify-center font-bold absolute -top-4 left-1/2 transform -translate-x-1/2">1</div>
+                        <i class="fa-solid fa-person-harassing text-4xl text-silver-500 mb-4 mt-2"></i>
+                        <h4 class="font-bold text-white mb-2">A Abordagem</h4>
+                        <p class="text-xs text-silver-400">O agressor exige a entrega do aparelho ou pertences.</p>
+                    </div>
+                    <div class="bg-moon-800 p-6 rounded-2xl border border-white/5 text-center relative">
+                        <div class="w-8 h-8 bg-silver-300 text-moon-900 rounded-full flex items-center justify-center font-bold absolute -top-4 left-1/2 transform -translate-x-1/2">2</div>
+                        <i class="fa-solid fa-mobile-screen-button text-4xl text-silver-500 mb-4 mt-2"></i>
+                        <h4 class="font-bold text-white mb-2">Falsa Entrega</h4>
+                        <p class="text-xs text-silver-400">Fingindo obediência, a usuária levanta o celular, atraindo o foco visual do agressor para o aparelho.</p>
+                    </div>
+                    <div class="bg-moon-800 p-6 rounded-2xl border border-white/5 text-center relative">
+                        <div class="w-8 h-8 bg-silver-300 text-moon-900 rounded-full flex items-center justify-center font-bold absolute -top-4 left-1/2 transform -translate-x-1/2">3</div>
+                        <i class="fa-solid fa-spray-can-sparkles text-4xl text-silver-500 mb-4 mt-2"></i>
+                        <h4 class="font-bold text-white mb-2">O Disparo</h4>
+                        <p class="text-xs text-silver-400">Um simples deslizar de dedo destrava. O bico ejeta o gel oculto diretamente no rosto do alvo.</p>
+                    </div>
+                    <div class="bg-moon-800 p-6 rounded-2xl border border-white/5 text-center relative">
+                        <div class="w-8 h-8 bg-silver-300 text-moon-900 rounded-full flex items-center justify-center font-bold absolute -top-4 left-1/2 transform -translate-x-1/2">4</div>
+                        <i class="fa-solid fa-person-running text-4xl text-green-400 mb-4 mt-2"></i>
+                        <h4 class="font-bold text-white mb-2">A Fuga</h4>
+                        <p class="text-xs text-silver-400">O agressor é cegado por reflexo e dor aguda extrema, permitindo a fuga imediata da vítima.</p>
+                    </div>
+                </div>
+
+                <!-- Tática da Borrachinha -->
+                <div class="glass-panel p-8 rounded-2xl border border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-circle-exclamation text-yellow-500 mr-2"></i> O Estrangulamento Defensivo (Xuxinhas)</h3>
+                        <p class="text-sm text-silver-300">
+                            Se o agressor tentar o enforcamento e te prensar na parede:<br>
+                            1. Defenda o pescoço colocando o queixo no peito.<br>
+                            2. Passe os braços por dentro/cima para diminuir a pressão.<br>
+                            3. Retire a xuxinha do pulso, passe por trás do pescoço dele e cruze puxando contra a laringe.<br>
+                            4. Aplique a restrição/fricção/química até ele soltar. Chute e fuja.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==================== TAB: CARRINHO ==================== -->
+        <div id="carrinho" class="tab-content">
+            <div class="max-w-4xl mx-auto px-4 py-12">
+                <h2 class="text-3xl font-bold mb-8 silver-gradient-text border-b border-white/10 pb-4">Seu Arsenal (Carrinho)</h2>
+                
+                <div id="cart-empty" class="text-center py-16 text-silver-500">
+                    <i class="fa-solid fa-basket-shopping text-6xl mb-4 opacity-50"></i>
+                    <p class="text-xl">Seu carrinho de segurança está vazio.</p>
+                    <button onclick="switchTab('catalogo')" class="mt-6 px-6 py-2 border border-silver-400 text-silver-300 rounded-full hover:bg-silver-300 hover:text-moon-900 transition">Voltar ao Catálogo</button>
+                </div>
+
+                <div id="cart-filled" class="hidden">
+                    <div class="glass-panel rounded-2xl p-6 mb-8 border border-white/10">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="text-silver-500 border-b border-white/10">
+                                    <th class="pb-3 font-semibold">Equipamento</th>
+                                    <th class="pb-3 font-semibold text-right">Qtd</th>
+                                    <th class="pb-3 font-semibold text-right">Preço</th>
+                                    <th class="pb-3 font-semibold text-center w-10">Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cart-items" class="text-silver-300">
+                                <!-- Itens via JS -->
+                            </tbody>
+                        </table>
+                        <div class="mt-6 border-t border-white/10 pt-4 flex justify-between items-center">
+                            <span class="text-xl text-silver-400">Total Seguro:</span>
+                            <span id="cart-total" class="text-2xl font-bold text-white">R$ 0,00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button onclick="checkout()" class="px-8 py-4 bg-silver-300 text-moon-900 font-bold rounded-xl hover:bg-white transition flex items-center shadow-[0_0_15px_rgba(226,232,240,0.5)]">
+                            <i class="fa-solid fa-lock mr-2"></i> Finalizar Compra Segura
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#050914] border-t border-white/5 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center mb-4 md:mb-0">
+                <svg class="h-6 w-6 text-silver-500 mr-2" viewBox="0 0 100 100" fill="currentColor">
+                    <path d="M50,45 L40,65 L50,60 L60,65 Z M35,70 L45,55 L30,40 L45,45 L50,25 L55,45 L70,40 L55,55 L65,70 L50,65 Z" fill="#94A3B8"/>
+                </svg>
+                <span class="text-silver-500 text-sm font-semibold tracking-widest uppercase">Moon Wolf</span>
+            </div>
+            <div class="text-silver-600 text-xs text-center md:text-right">
+                <p>Junte-se à revolução da segurança pessoal feminina.</p>
+                <p class="mt-1">&copy; 2026 Moon Wolf - Linha Silver Moon She-Wolf. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast"><i class="fa-solid fa-check-circle text-green-600 mr-2"></i> Equipamento adicionado ao arsenal!</div>
+
+    <script>
+        // Lógica de Abas
+        function switchTab(tabId) {
+            // Ocultar todas as abas
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Resetar botões do menu
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-moon-800', 'text-white');
+                btn.classList.add('text-silver-500');
+            });
+
+            // Mostrar aba ativa
+            document.getElementById(tabId).classList.add('active');
+            
+            // Destacar botão ativo
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if(activeBtn) {
+                activeBtn.classList.add('bg-moon-800', 'text-white');
+                activeBtn.classList.remove('text-silver-500');
+            }
+            
+            window.scrollTo(0,0);
+        }
+
+        // Lógica de Carrinho de Compras
+        let cart = [];
+
+        function addToCart(name, price) {
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.qty += 1;
+            } else {
+                cart.push({ name, price, qty: 1 });
+            }
+            updateCartUI();
+            showToast();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            // Atualizar contagem na navbar
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cart-count').innerText = totalItems;
+
+            // Atualizar visões do carrinho
+            const emptyView = document.getElementById('cart-empty');
+            const filledView = document.getElementById('cart-filled');
+            const tbody = document.getElementById('cart-items');
+            
+            if (cart.length === 0) {
+                emptyView.classList.remove('hidden');
+                filledView.classList.add('hidden');
+            } else {
+                emptyView.classList.add('hidden');
+                filledView.classList.remove('hidden');
+                
+                tbody.innerHTML = '';
+                let total = 0;
+
+                cart.forEach((item, index) => {
+                    const itemTotal = item.price * item.qty;
+                    total += itemTotal;
+                    
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-white/5 hover:bg-white/5 transition";
+                    tr.innerHTML = `
+                        <td class="py-4">${item.name}</td>
+                        <td class="py-4 text-right">${item.qty}</td>
+                        <td class="py-4 text-right">R$ ${itemTotal.toFixed(2).replace('.', ',')}</td>
+                        <td class="py-4 text-center">
+                            <button onclick="removeFromCart(${index})" class="text-red-400 hover:text-red-300">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                document.getElementById('cart-total').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+            }
+        }
+
+        function checkout() {
+            if(cart.length > 0) {
+                alert("Simulação de Checkout Iniciada. Este é um protótipo de ambiente seguro de pagamento.");
+                cart = [];
+                updateCartUI();
+                switchTab('home');
+            }
+        }
+
+        function showToast() {
+            const toast = document.getElementById("toast");
+            toast.className = "show";
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+    </script>
+</body>
+</html>
