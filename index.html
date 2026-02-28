@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moon Wolf | Silver Moon She-Wolf </title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Adicionado: Biblioteca para gerar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script>
@@ -236,9 +238,11 @@
                     
                     <!-- Produto 1: Capa Spray -->
                     <div class="glass-panel rounded-3xl overflow-hidden border border-white/10 silver-border-glow transition duration-300 flex flex-col">
-                        <div class="h-64 bg-moon-800 relative flex items-center justify-center p-6">
+                        <div class="h-64 bg-moon-800 relative flex items-center justify-center p-6 overflow-hidden">
                             <!-- Placeholder de Imagem com Ícone -->
-                            <i class="fa-solid fa-mobile-screen text-8xl text-silver-500 opacity-50 absolute"></i>
+                            <i class="fa-solid fa-mobile-screen text-8xl text-silver-500 opacity-50 absolute z-0"></i>
+                            <!-- Opção de Imagem (insira a URL no src) -->
+                            <img src="" class="absolute inset-0 w-full h-full object-cover z-0 hidden" onload="this.classList.remove('hidden')">
                             <div class="z-10 text-center">
                                 <span class="bg-moon-900 text-silver-300 text-xs font-bold px-3 py-1 rounded-full border border-silver-500 uppercase tracking-wide">Produto Herói</span>
                             </div>
@@ -267,8 +271,10 @@
 
                     <!-- Produto 2: Scrunchie Mod 1 -->
                     <div class="glass-panel rounded-3xl overflow-hidden border border-white/10 silver-border-glow transition duration-300 flex flex-col">
-                        <div class="h-64 bg-moon-800 relative flex items-center justify-center">
-                            <i class="fa-solid fa-ring text-8xl text-silver-500 opacity-50 absolute"></i>
+                        <div class="h-64 bg-moon-800 relative flex items-center justify-center overflow-hidden">
+                            <i class="fa-solid fa-ring text-8xl text-silver-500 opacity-50 absolute z-0"></i>
+                            <!-- Opção de Imagem (insira a URL no src) -->
+                            <img src="" class="absolute inset-0 w-full h-full object-cover z-0 hidden" onload="this.classList.remove('hidden')">
                         </div>
                         <div class="p-8 flex flex-col flex-grow">
                             <div class="flex justify-between items-start mb-4">
@@ -289,8 +295,10 @@
 
                     <!-- Produto 3: Scrunchie Mod 2 -->
                     <div class="glass-panel rounded-3xl overflow-hidden border border-white/10 silver-border-glow transition duration-300 flex flex-col">
-                        <div class="h-64 bg-moon-800 relative flex items-center justify-center">
-                            <i class="fa-solid fa-circle-notch text-8xl text-silver-500 opacity-50 absolute"></i>
+                        <div class="h-64 bg-moon-800 relative flex items-center justify-center overflow-hidden">
+                            <i class="fa-solid fa-circle-notch text-8xl text-silver-500 opacity-50 absolute z-0"></i>
+                            <!-- Opção de Imagem (insira a URL no src) -->
+                            <img src="" class="absolute inset-0 w-full h-full object-cover z-0 hidden" onload="this.classList.remove('hidden')">
                         </div>
                         <div class="p-8 flex flex-col flex-grow">
                             <div class="flex justify-between items-start mb-4">
@@ -311,8 +319,10 @@
 
                     <!-- Produto 4: Scrunchie Mod 3 -->
                     <div class="glass-panel rounded-3xl overflow-hidden border border-white/10 silver-border-glow transition duration-300 flex flex-col">
-                        <div class="h-64 bg-moon-800 relative flex items-center justify-center">
-                            <i class="fa-solid fa-gem text-8xl text-silver-500 opacity-50 absolute"></i>
+                        <div class="h-64 bg-moon-800 relative flex items-center justify-center overflow-hidden">
+                            <i class="fa-solid fa-gem text-8xl text-silver-500 opacity-50 absolute z-0"></i>
+                            <!-- Opção de Imagem (insira a URL no src) -->
+                            <img src="" class="absolute inset-0 w-full h-full object-cover z-0 hidden" onload="this.classList.remove('hidden')">
                         </div>
                         <div class="p-8 flex flex-col flex-grow">
                             <div class="flex justify-between items-start mb-4">
@@ -333,8 +343,10 @@
 
                     <!-- Produto 5: Assinatura Mensal -->
                     <div class="glass-panel rounded-3xl overflow-hidden border border-white/10 silver-border-glow transition duration-300 flex flex-col">
-                        <div class="h-64 bg-moon-800 relative flex items-center justify-center">
-                            <i class="fa-solid fa-box-open text-8xl text-silver-500 opacity-50 absolute"></i>
+                        <div class="h-64 bg-moon-800 relative flex items-center justify-center overflow-hidden">
+                            <i class="fa-solid fa-box-open text-8xl text-silver-500 opacity-50 absolute z-0"></i>
+                            <!-- Opção de Imagem (insira a URL no src) -->
+                            <img src="" class="absolute inset-0 w-full h-full object-cover z-0 hidden" onload="this.classList.remove('hidden')">
                         </div>
                         <div class="p-8 flex flex-col flex-grow">
                             <div class="flex justify-between items-start mb-4">
@@ -355,8 +367,10 @@
 
                     <!-- Produto 6: Unhas de Polímero -->
                     <div class="glass-panel rounded-3xl overflow-hidden border border-white/10 silver-border-glow transition duration-300 flex flex-col">
-                        <div class="h-64 bg-moon-800 relative flex items-center justify-center">
-                            <i class="fa-solid fa-hand-sparkles text-8xl text-silver-500 opacity-50 absolute"></i>
+                        <div class="h-64 bg-moon-800 relative flex items-center justify-center overflow-hidden">
+                            <i class="fa-solid fa-hand-sparkles text-8xl text-silver-500 opacity-50 absolute z-0"></i>
+                            <!-- Opção de Imagem (insira a URL no src) -->
+                            <img src="" class="absolute inset-0 w-full h-full object-cover z-0 hidden" onload="this.classList.remove('hidden')">
                         </div>
                         <div class="p-8 flex flex-col flex-grow">
                             <div class="flex justify-between items-start mb-4">
@@ -627,26 +641,22 @@
             setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
         }
 
-        // Função para baixar o conteúdo da aba
+        // Função para baixar o conteúdo da aba em PDF
         function baixarConteudo(tabId) {
             const element = document.getElementById(tabId);
             if(!element) return;
             
-            // Pega o texto limpo da aba e formata
-            const content = element.innerText;
-            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-            const url = window.URL.createObjectURL(blob);
-            
-            // Cria um link temporário para forçar o download
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `MoonWolf_${tabId}_conteudo.txt`;
-            document.body.appendChild(a);
-            a.click();
-            
-            // Limpa o documento
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
+            // Configurações para o gerador de PDF
+            const opt = {
+                margin:       10,
+                filename:     `MoonWolf_${tabId}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0B1325' },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Utiliza a biblioteca html2pdf importada no <head>
+            html2pdf().set(opt).from(element).save();
         }
     </script>
 </body>
