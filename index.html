@@ -14,16 +14,17 @@
             theme: {
                 extend: {
                     colors: {
+                        white: 'var(--color-white)',
                         moon: {
-                            900: '#0B1325', /* Azul profundo sombra de lua */
-                            800: '#1A2640', /* Painéis azuis */
-                            700: '#2C3E5D', /* Hover */
+                            900: 'var(--moon-900)',
+                            800: 'var(--moon-800)',
+                            700: 'var(--moon-700)',
                         },
                         silver: {
-                            100: '#F8F9FA',
-                            300: '#E2E8F0', /* Prata claro */
-                            400: '#CBD5E1', /* Prata médio */
-                            500: '#94A3B8', /* Prata escuro */
+                            100: 'var(--silver-100)',
+                            300: 'var(--silver-300)',
+                            400: 'var(--silver-400)',
+                            500: 'var(--silver-500)',
                         }
                     },
                     fontFamily: {
@@ -34,9 +35,71 @@
         }
     </script>
     <style>
+        /* DEFINIÇÕES DE CORES DOS TEMAS E MEMÓRIA */
+        :root {
+            --color-white: #ffffff;
+            --moon-900: #0B1325;
+            --moon-800: #1A2640;
+            --moon-700: #2C3E5D;
+            --silver-100: #F8F9FA;
+            --silver-300: #E2E8F0;
+            --silver-400: #CBD5E1;
+            --silver-500: #94A3B8;
+            --glass-bg: rgba(26, 38, 64, 0.7);
+        }
+
+        [data-theme="camuflada"] {
+            --color-white: #2D3748; /* Texto escuro para contraste */
+            --moon-900: #F4F1DE; /* Creme pastel */
+            --moon-800: #E0E5D7; /* Verde sálvia pastel (painéis) */
+            --moon-700: #D1D9C5; /* Hover */
+            --silver-100: #1A202C;
+            --silver-300: #4A5568; /* Texto principal (cinza/prata escuro) */
+            --silver-400: #718096; /* Textos secundários */
+            --silver-500: #A0AEC0; /* Detalhes em prata */
+            --glass-bg: rgba(224, 229, 215, 0.7);
+        }
+
+        [data-theme="xicara"] {
+            --color-white: #2C3E50; /* Texto escuro para contraste */
+            --moon-900: #FFFFFF; /* Branco puro */
+            --moon-800: #F0F8FF; /* Azul clarinho (Alice Blue) */
+            --moon-700: #FFF0F5; /* Rosa clarinho (Lavender Blush) */
+            --silver-100: #111827;
+            --silver-300: #475569; /* Texto principal */
+            --silver-400: #64748B; 
+            --silver-500: #94A3B8; /* Detalhes em prata */
+            --glass-bg: rgba(240, 248, 255, 0.8);
+        }
+
+        [data-theme="provocante"] {
+            --color-white: #FFFFFF;
+            --moon-900: #111111; /* Preto / Cinza muito escuro */
+            --moon-800: #310A14; /* Vinho escuro (painéis) */
+            --moon-700: #8A1C2C; /* Vermelho provocante (hover) */
+            --silver-100: #F8F9FA;
+            --silver-300: #E2E8F0; /* Prata claro (textos) */
+            --silver-400: #9CA3AF; /* Cinza */
+            --silver-500: #6B7280; /* Prata escuro */
+            --glass-bg: rgba(49, 10, 20, 0.8);
+        }
+
+        [data-theme="amadeirada"] {
+            --color-white: #FFFFFF;
+            --moon-900: #293026; /* Fundo verde floresta macio */
+            --moon-800: #3A4536; /* Painéis verde amadeirado */
+            --moon-700: #4D5C48; /* Hover verde folha seco */
+            --silver-100: #F3F4F6;
+            --silver-300: #D1D5DB; /* Textos prata/cinza claro */
+            --silver-400: #9CA3AF;
+            --silver-500: #A3ACA1; /* Prata com tom esverdeado */
+            --glass-bg: rgba(58, 69, 54, 0.7);
+        }
+
         body {
-            background-color: #0B1325;
-            color: #E2E8F0;
+            background-color: var(--moon-900);
+            color: var(--silver-300);
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
         
         /* Ocultar barra de rolagem mas manter funcionalidade */
@@ -44,14 +107,14 @@
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #0B1325; 
+            background: var(--moon-900); 
         }
         ::-webkit-scrollbar-thumb {
-            background: #2C3E5D; 
+            background: var(--moon-700); 
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #94A3B8; 
+            background: var(--silver-500); 
         }
 
         .tab-content {
@@ -68,9 +131,10 @@
         }
 
         .glass-panel {
-            background: rgba(26, 38, 64, 0.7);
+            background: var(--glass-bg);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(226, 232, 240, 0.1);
+            border: 1px solid color-mix(in srgb, var(--color-white) 10%, transparent);
+            transition: background 0.5s ease, border-color 0.5s ease;
         }
 
         .silver-gradient-text {
@@ -176,19 +240,31 @@
                 
                 <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 flex flex-col items-center text-center">
                     <span class="text-silver-500 font-semibold tracking-widest uppercase mb-4 text-sm"><i class="fa-solid fa-shield-halved mr-2"></i>A Revolução da Segurança Feminina</span>
-                    <h1 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+                    <h1 class="text-4xl md:text-6xl font-bold tracking-tight mb-6 text-white">
                         Inteligência tática e <span class="silver-gradient-text">defesa pessoal</span> camuflada no seu dia a dia.
                     </h1>
                     <p class="mt-4 text-xl text-silver-400 max-w-3xl mb-10">
                         Acessórios comuns escondem engenharia de sobrevivência. Letais na precisão, até o momento exato em que salvam uma vida.
                     </p>
-                    <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex flex-col sm:flex-row gap-4 mb-8">
                         <button onclick="switchTab('catalogo')" class="px-8 py-4 bg-silver-300 text-moon-900 font-bold rounded-full hover:bg-white transition shadow-[0_0_15px_rgba(226,232,240,0.5)]">
                             Explorar a Linha Silver Moon
                         </button>
                         <button onclick="switchTab('estrategia')" class="px-8 py-4 bg-transparent border border-silver-500 text-silver-300 font-bold rounded-full hover:bg-white/10 transition">
                             Conhecer a Tática
                         </button>
+                    </div>
+
+                    <!-- NOVO: Seletor de Aura / Temas de Memória -->
+                    <div class="mt-4 flex flex-col items-center glass-panel px-6 py-4 rounded-3xl border border-white/10">
+                        <span class="text-xs font-bold text-silver-400 uppercase tracking-widest mb-4">Qual aura te faz sentir mais segura hoje?</span>
+                        <div class="flex gap-4">
+                            <button onclick="mudarTema('padrao')" class="w-10 h-10 rounded-full bg-[#0B1325] border-2 border-[#E2E8F0] hover:scale-125 hover:shadow-[0_0_15px_#E2E8F0] transition-all" title="Sombra de Lua (Original Azul e Prata)"></button>
+                            <button onclick="mudarTema('camuflada')" class="w-10 h-10 rounded-full bg-[#F4F1DE] border-2 border-[#A0AEC0] hover:scale-125 hover:shadow-[0_0_15px_#A0AEC0] transition-all" title="Camuflada Pastel (Tons pastéis discretos com prata)"></button>
+                            <button onclick="mudarTema('xicara')" class="w-10 h-10 rounded-full bg-[#FFFFFF] border-2 border-[#F0F8FF] hover:scale-125 hover:shadow-[0_0_15px_#FFF0F5] transition-all" title="Xícara de Chá (Branco, azul e rosa clarinhos com prata)"></button>
+                            <button onclick="mudarTema('provocante')" class="w-10 h-10 rounded-full bg-[#111111] border-2 border-[#8A1C2C] hover:scale-125 hover:shadow-[0_0_15px_#8A1C2C] transition-all" title="Vermelho Provocante (Preto, cinza, vinho e prata)"></button>
+                            <button onclick="mudarTema('amadeirada')" class="w-10 h-10 rounded-full bg-[#3A4536] border-2 border-[#A3ACA1] hover:scale-125 hover:shadow-[0_0_15px_#A3ACA1] transition-all" title="Verde Amadeirado (Tons macios da natureza com prata)"></button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -520,7 +596,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-[#050914] border-t border-white/5 mt-auto">
+    <footer class="bg-moon-900 border-t border-white/5 mt-auto transition-colors duration-500">
         <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center mb-4 md:mb-0">
                 <svg class="h-6 w-6 text-silver-500 mr-2" viewBox="0 0 100 100" fill="currentColor">
@@ -658,6 +734,22 @@
             // Utiliza a biblioteca html2pdf importada no <head>
             html2pdf().set(opt).from(element).save();
         }
+
+        // --- SISTEMA DE CORES E MEMÓRIA DE NAVEGADOR ---
+        function mudarTema(tema) {
+            // Aplica a cor no HTML
+            document.documentElement.setAttribute('data-theme', tema);
+            // Salva na memória de longo prazo do navegador da usuária
+            localStorage.setItem('moonwolf_aura_seguranca', tema);
+        }
+
+        // Ao abrir o site, verifica se a usuária já escolheu uma cor antes
+        document.addEventListener('DOMContentLoaded', () => {
+            const temaSalvo = localStorage.getItem('moonwolf_aura_seguranca');
+            if (temaSalvo) {
+                mudarTema(temaSalvo);
+            }
+        });
     </script>
 </body>
 </html>
